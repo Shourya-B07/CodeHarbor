@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "@/components/providers/ConvexClientProvider";
-// import Footer from "@/components/Footer";
-// import { Toaster } from "react-hot-toast";
+import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Code Craft",
+  title: "CodeHarbor",
   description: "Share and run code snippets",
 };
 
@@ -35,9 +35,9 @@ export default function RootLayout({
         >
           <ConvexClientProvider>{children}</ConvexClientProvider>
 
-          {/* <Footer />
+          <Footer />
 
-          <Toaster /> */}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

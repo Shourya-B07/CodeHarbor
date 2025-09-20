@@ -53,7 +53,7 @@ It supports up to **10 programming languages** and provides both **Free** and **
 
 1.Clone the Repository
 ```bash
-git clone https://github.com/your-username/codeharbor.git
+git clone https://github.com/Shourya-B07/CodeHarbor.git
 cd codeharbor
 ```
 2.Install Dependencies

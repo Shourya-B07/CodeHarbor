@@ -79,6 +79,7 @@ NEXT_PUBLIC_CONVEX_URL
 ```
 4.Run the Development Server
 ```
+npx convex dev
 npm run dev
 ```
 

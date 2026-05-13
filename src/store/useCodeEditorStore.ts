@@ -3,6 +3,12 @@ import { LANGUAGE_CONFIG } from "@/app/(root)/_constants";
 import { create } from "zustand";
 import * as monaco from "monaco-editor"; // ✅ use this instead of Monaco from react
 
+/** Override with NEXT_PUBLIC_PISTON_EXECUTE_URL when using self-hosted Piston (public EMKC is often whitelist-only). */
+function getPistonExecuteUrl(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_PISTON_EXECUTE_URL?.trim();
+  return fromEnv || "https://emkc.org/api/v2/piston/execute";
+}
+
 const getInitialState = () => {
   if (typeof window === "undefined") {
     return {
@@ -81,7 +87,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
 
       try {
         const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+        const response = await fetch(getPistonExecuteUrl(), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +102,11 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         const data = await response.json();
 
         if (data.message) {
-          set({ error: data.message, executionResult: { code, output: "", error: data.message } });
+          let msg = data.message as string;
+          if (/whitelist|engineerman|discord/i.test(msg)) {
+            msg += " Host your own Piston (see github.com/engineer-man/piston) and set NEXT_PUBLIC_PISTON_EXECUTE_URL to your /api/v2/execute URL.";
+          }
+          set({ error: msg, executionResult: { code, output: "", error: msg } });
           return;
         }
 

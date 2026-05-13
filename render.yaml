@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: codeharbor
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: NEXT_PUBLIC_CONVEX_URL
+        sync: false
+      - key: CONVEX_DEPLOYMENT
+        sync: false

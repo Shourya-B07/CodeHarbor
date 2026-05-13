@@ -6,7 +6,7 @@ import { Blocks, Code2, Sparkles } from "lucide-react";
 import { SignedIn } from "@clerk/nextjs";
 import ThemeSelector from "./ThemeSelector";
 import LanguageSelector from "./LanguageSelector";
-import RunButton from "./RunButton";
+import RunButton from "./run-button";
 import HeaderProfileBtn from "./HeaderProfileBtn";
 
 async function Header() {

@@ -3,10 +3,10 @@ import { LANGUAGE_CONFIG } from "@/app/(root)/_constants";
 import { create } from "zustand";
 import * as monaco from "monaco-editor"; // ✅ use this instead of Monaco from react
 
-/** Override with NEXT_PUBLIC_PISTON_EXECUTE_URL when using self-hosted Piston (public EMKC is often whitelist-only). */
-function getPistonExecuteUrl(): string {
-  const fromEnv = process.env.NEXT_PUBLIC_PISTON_EXECUTE_URL?.trim();
-  return fromEnv || "https://emkc.org/api/v2/piston/execute";
+/** Override with NEXT_PUBLIC_JUDGE0_EXECUTE_URL when using self-hosted Judge0. */
+function getJudge0Url(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_JUDGE0_EXECUTE_URL?.trim();
+  return fromEnv || "https://ce.judge0.com/submissions?base64_encoded=false&wait=true";
 }
 
 const getInitialState = () => {
@@ -86,32 +86,29 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       set({ isRunning: true, error: null, output: "" });
 
       try {
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
-        const response = await fetch(getPistonExecuteUrl(), {
+        const judge0Id = LANGUAGE_CONFIG[language].judge0Id;
+        const response = await fetch(getJudge0Url(), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            language: runtime.language,
-            version: runtime.version,
-            files: [{ content: code }],
+            language_id: judge0Id,
+            source_code: code,
+            stdin: "",
           }),
         });
 
         const data = await response.json();
 
-        if (data.message) {
-          let msg = data.message as string;
-          if (/whitelist|engineerman|discord/i.test(msg)) {
-            msg += " Host your own Piston (see github.com/engineer-man/piston) and set NEXT_PUBLIC_PISTON_EXECUTE_URL to your /api/v2/execute URL.";
-          }
+        if (!response.ok) {
+          const msg = data.error || data.message || "Execution failed";
           set({ error: msg, executionResult: { code, output: "", error: msg } });
           return;
         }
 
-        if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
+        if (data.compile_output) {
+          const error = data.compile_output;
           set({
             error,
             executionResult: { code, output: "", error },
@@ -119,8 +116,8 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
           return;
         }
 
-        if (data.run && data.run.code !== 0) {
-          const error = data.run.stderr || data.run.output;
+        if (data.stderr) {
+          const error = data.stderr;
           set({
             error,
             executionResult: { code, output: "", error },
@@ -128,7 +125,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
           return;
         }
 
-        const output = data.run.output;
+        const output = data.stdout || "";
         set({
           output: output.trim(),
           error: null,

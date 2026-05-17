@@ -9,7 +9,7 @@
 [![Piston API](https://img.shields.io/badge/Piston_API-FF4500?style=for-the-badge&logo=code&logoColor=white)](https://github.com/engineer-man/piston)
 
 
-CodeHarbor is a **SaaS platform** for developers to **collaboratively write, compile, and share code snippets** in real time.  
+CodeHarbor is a **SaaS platform** for developers to ** write, compile, and share code snippets** in real time.  
 It supports up to **10 programming languages** and provides both **Free** and **Pro plans** tailored to your needs.  
 
 > Think of it as your personal coding dockyard — write, compile, collaborate, and share code snippets with the community.
